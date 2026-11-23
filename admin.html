@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Admin Dashboard ♡ joonnoir</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-light: #f6f6f6;
+      --bg-mist: #e5e5e5;
+      --bg-sage-gray: #dce0dc;
+      --surface-white: #fbfbfb;
+      --card-bg: rgba(251, 251, 251, 0.97);
+      --border-soft: #e2e2e2;
+      --silver-mid: #b4b4b4;
+      --charcoal-dark: #666666;
+      --text-main: #4a4a4a;
+      --text-muted: #7a7a7a;
+      --shadow-soft: 0 10px 26px rgba(102, 102, 102, 0.12);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Quicksand', 'Mitr', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, var(--surface-white) 0%, var(--bg-light) 48%, var(--bg-mist) 85%, var(--bg-sage-gray) 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 20px 14px 70px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: var(--shadow-soft);
+      border: 1.5px solid var(--surface-white);
+      margin-bottom: 16px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--charcoal-dark);
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .field-group {
+      margin-bottom: 14px;
+    }
+
+    .field-label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      display: block;
+      color: var(--text-main);
+    }
+
+    .input-box, .textarea-box {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 14px;
+      border: 1.5px solid var(--border-soft);
+      outline: none;
+      font-size: 13.5px;
+      background: var(--surface-white);
+      color: var(--text-main);
+    }
+
+    .input-box:focus, .textarea-box:focus {
+      border-color: var(--charcoal-dark);
+    }
+
+    .textarea-box {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .file-picker-box {
+      border: 2px dashed var(--silver-mid);
+      border-radius: 16px;
+      padding: 14px;
+      text-align: center;
+      background: var(--bg-light);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .file-picker-box:active {
+      background: var(--bg-mist);
+    }
+
+    .file-picker-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--charcoal-dark);
+    }
+
+    .file-picker-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .preview-single-img {
+      width: 100%;
+      max-height: 140px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-top: 8px;
+      border: 1px solid var(--border-soft);
+      display: block;
+    }
+
+    .preview-avatar-img {
+      width: 76px;
+      height: 76px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 8px auto 0;
+      border: 2px solid var(--charcoal-dark);
+      display: block;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      flex: 1;
+      white-space: nowrap;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 16px;
+      background: var(--surface-white);
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 12.5px;
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #7c7c7c, var(--charcoal-dark));
+      color: var(--surface-white);
+      border-color: transparent;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border-radius: 18px;
+      border: none;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, #7c7c7c, var(--charcoal-dark));
+      color: var(--surface-white);
+      box-shadow: 0 4px 14px rgba(102, 102, 102, 0.25);
+      margin-top: 8px;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--surface-white);
+      color: var(--charcoal-dark);
+      border: 1.5px solid var(--border-soft);
+      box-shadow: none;
+    }
+
+    .btn-danger-sm {
+      background: #e5e5e5;
+      color: var(--charcoal-dark);
+      border: 1px solid #cccccc;
+      border-radius: 10px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .hl-admin-card {
+      background: var(--bg-light);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+
+    .hl-admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .hl-thumb-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .hl-thumb-item {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      background: var(--surface-white);
+    }
+
+    .hl-thumb-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hl-thumb-del {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(102, 102, 102, 0.92);
+      color: var(--surface-white);
+      border: none;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .rev-admin-item {
+      background: var(--surface-white);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="card" id="loginBox">
+    <div class="title">Admin Dashboard ♡ joonnoir</div>
+    <div class="field-group">
+      <label class="field-label">อีเมลแอดมิน (Email)</label>
+      <input type="email" id="loginEmail" class="input-box" placeholder="kumkimmii@gmail.com">
+    </div>
+    <div class="field-group">
+      <label class="field-label">รหัสผ่าน (Password)</label>
+      <input type="password" id="loginPass" class="input-box" placeholder="••••••••">
+    </div>
+    <button type="button" class="btn" onclick="handleAdminLogin()">เข้าสู่ระบบแอดมิน ♡</button>
+  </div>
+
+  <div id="dashboardBox" class="hidden">
+    <div class="nav-tabs">
+      <button type="button" class="tab-btn active" onclick="switchTab('general', this)">1. ข้อมูลร้าน ♡</button>
+      <button type="button" class="tab-btn" onclick="switchTab('highlights', this)">2. ไฮไลท์ไม่จำกัด ♡</button>
+      <button type="button" class="tab-btn" onclick="switchTab('reviews', this)">3. จัดการรีวิว ♡</button>
+      <button type="button" class="tab-btn" onclick="switchTab('account', this)">4. บัญชี ♡</button>
+    </div>
+
+    <!-- แท็บ 1: ข้อมูลร้าน -->
+    <div class="tab-content active" id="tab-general">
+      <div class="card">
+        <div class="title">แก้ไขโปรไฟล์หน้าร้าน joonnoir ♡</div>
+        <div class="field-group">
+          <label class="field-label">ชื่อร้าน</label>
+          <input type="text" id="cfgShopName" class="input-box">
+        </div>
+        <div class="field-group">
+          <label class="field-label">คำอธิบายไบโอ (Bio)</label>
+          <textarea id="cfgShopBio" class="textarea-box"></textarea>
+        </div>
+        <div class="field-group">
+          <label class="field-label">หัวข้อไฮไลท์</label>
+          <input type="text" id="cfgHighlightsTitle" class="input-box">
+        </div>
+        <div class="field-group">
+          <label class="field-label">หัวข้อรีวิวลูกค้า</label>
+          <input type="text" id="cfgReviewsTitle" class="input-box">
+        </div>
+        <div class="field-group">
+          <label class="field-label">ข้อความขอบคุณด้านล่างสุด</label>
+          <input type="text" id="cfgFooterText" class="input-box">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">รูปแบนเนอร์ (Banner)</label>
+          <div class="file-picker-box" onclick="document.getElementById('bannerFileInput').click()">
+            <div class="file-picker-title">กดเลือกรูปแบนเนอร์จากในเครื่อง ♡</div>
+            <div class="file-picker-sub">ไม่จำกัดขนาดและปรับขนาดอัตโนมัติเฉพาะไฟล์ใหญ่เกินลิมิต</div>
+            <img id="previewBanner" class="preview-single-img" src="https://files.catbox.moe/vc7n8m.gif" alt="Banner">
+          </div>
+          <input type="file" id="bannerFileInput" accept="image/*" style="display:none;" onchange="handleSingleImagePick(event, 'banner')">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">รูปโปรไฟล์ (Profile)</label>
+          <div class="file-picker-box" onclick="document.getElementById('profileFileInput').click()">
+            <div class="file-picker-title">กดเลือกรูปโปรไฟล์จากในเครื่อง ♡</div>
+            <div class="file-picker-sub">ไม่จำกัดขนาดและปรับขนาดอัตโนมัติเฉพาะไฟล์ใหญ่เกินลิมิต</div>
+            <img id="previewProfile" class="preview-avatar-img" src="https://files.catbox.moe/3sjpq9.jpeg" alt="Profile">
+          </div>
+          <input type="file" id="profileFileInput" accept="image/*" style="display:none;" onchange="handleSingleImagePick(event, 'profile')">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">ลิงก์เพลงพื้นหลัง (.mp3)</label>
+          <input type="text" id="cfgMusic" class="input-box">
+        </div>
+        <button type="button" class="btn" id="btnSaveGeneral" onclick="saveGeneralConfig()">บันทึกข้อมูลร้านค้า ♡</button>
+      </div>
+    </div>
+
+    <!-- แท็บ 2: ไฮไลท์ (สร้างหมวดหมู่และเพิ่มรูปได้แบบไม่จำกัดจำนวน) -->
+    <div class="tab-content" id="tab-highlights">
+      <div class="card">
+        <div class="title">เพิ่มหมวดหมู่ไฮไลท์ใหม่ (ไม่จำกัด) ♡</div>
+        <div class="field-group">
+          <label class="field-label">ชื่อไฮไลท์</label>
+          <input type="text" id="newHlTitle" class="input-box" placeholder="เช่น k-pop goods ♡">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">เลือกรูปปกไฮไลท์ (Cover)</label>
+          <div class="file-picker-box" onclick="document.getElementById('newHlCoverFile').click()">
+            <div class="file-picker-title" id="newHlCoverLabel">กดเลือกรูปปกจากในเครื่อง ♡</div>
+            <div class="file-picker-sub">หากไม่เลือก ระบบจะใช้รูปแรกด้านในเป็นปกให้อัตโนมัติ</div>
+            <img id="previewNewHlCover" class="preview-avatar-img hidden" src="" alt="">
+          </div>
+          <input type="file" id="newHlCoverFile" accept="image/*" style="display:none;" onchange="handleNewHlCoverPick(event)">
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">เลือกรูปภาพด้านในไฮไลท์ (เลือกได้ไม่จำกัดจำนวน)</label>
+          <div class="file-picker-box" onclick="document.getElementById('newHlImagesFile').click()">
+            <div class="file-picker-title" id="newHlImagesLabel">กดเลือกรูปภาพจากอัลบั้ม (ไม่จำกัดจำนวน) ♡</div>
+            <div class="file-picker-sub">บันทึกรูปแยกชิ้นอัตโนมัติ ใส่ได้เรื่อยๆ ไม่มีลิมิตจำนวน</div>
+          </div>
+          <input type="file" id="newHlImagesFile" accept="image/*" multiple style="display:none;" onchange="handleNewHlMultiPick(event)">
+        </div>
+
+        <button type="button" class="btn" id="btnCreateHl" onclick="createNewHighlight()">สร้างไฮไลท์นี้ ♡</button>
+      </div>
+
+      <div class="card">
+        <div class="title">รายการไฮไลท์ทั้งหมด ♡</div>
+        <div id="adminHighlightsList">
+          <p style="text-align:center; font-size:13px; color:var(--text-muted);">กำลังโหลดข้อมูลไฮไลท์ ♡</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- แท็บ 3: จัดการรีวิว -->
+    <div class="tab-content" id="tab-reviews">
+      <div class="card">
+        <div class="title">จัดการรีวิวลูกค้าทั้งหมด ♡</div>
+        <div id="adminReviewsList">
+          <p style="text-align:center; font-size:13px; color:var(--text-muted);">กำลังโหลดรีวิว ♡</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- แท็บ 4: บัญชีแอดมิน -->
+    <div class="tab-content" id="tab-account">
+      <div class="card">
+        <div class="title">ตั้งค่าบัญชีเข้าสู่ระบบ ♡</div>
+        <div class="field-group">
+          <label class="field-label">อีเมลแอดมิน</label>
+          <input type="email" id="editAdminEmail" class="input-box">
+        </div>
+        <div class="field-group">
+          <label class="field-label">รหัสผ่านใหม่ (ปล่อยว่างหากไม่ต้องการเปลี่ยน)</label>
+          <input type="password" id="editAdminPass" class="input-box" placeholder="รหัสผ่านใหม่">
+        </div>
+        <button type="button" class="btn" onclick="updateAdminAccount()">บันทึกข้อมูลบัญชี ♡</button>
+        <button type="button" class="btn btn-secondary" onclick="logoutAdmin()">ออกจากระบบ ♡</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyCpAGDSy1NRgmLV_g7qJrCpwOhU9MrfQyY",
+    authDomain: "benefitie.firebaseapp.com",
+    projectId: "benefitie",
+    storageBucket: "benefitie.firebasestorage.app",
+    messagingSenderId: "270365672215",
+    appId: "1:270365672215:web:230d1491091e26ce83ed52"
+  };
+
+  if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const DB_SITE = "joonnoir_site";
+  const DB_REVIEWS = "joonnoir_reviews";
+  const DB_HIGHLIGHTS = "joonnoir_highlights";
+
+  const MAX_SAFE_IMAGE_BYTES = 720000;
+
+  const DEFAULT_BANNER_URL = "https://files.catbox.moe/vc7n8m.gif";
+  const DEFAULT_PROFILE_URL = "https://files.catbox.moe/3sjpq9.jpeg";
+  const DEFAULT_BIO_TEXT = "joonnoir 𐙚\na little shop for k-pop lovers\nphotocards • k-pop goods • premium apps\ndigital services & more ♡\nmade with love, packed with care";
+  const DEFAULT_MUSIC_URL = "https://file.garden/asG8Gt-rqWIpi3II/BTS%20(%E1%84%87%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%AB%E1%84%89%E1%85%A9%E1%84%82%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB)%20-%20Heartbeat%20(Color%20Coded%20Lyrics%20Eng%20Rom%20Han%20%E1%84%80%E1%85%A1%E1%84%89%E1%85%A1).mp3";
+
+  let currentAdminEmail = "kumkimmii@gmail.com";
+  let currentAdminPass = "@IndigoArchive#82";
+
+  let pickedBannerDataUrl = "";
+  let pickedProfileDataUrl = "";
+  let pickedNewHlCoverDataUrl = "";
+  let pickedNewHlFiles = [];
+
+  function readFileAsDataUrl(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(new Error("ไม่สามารถอ่านไฟล์รูปภาพได้"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function encodeCanvas(img, maxSide, quality, mimeType) {
+    const origW = img.naturalWidth || img.width || 600;
+    const origH = img.naturalHeight || img.height || 600;
+    let targetW = origW;
+    let targetH = origH;
+
+    if (Math.max(origW, origH) > maxSide) {
+      if (origW >= origH) {
+        targetW = maxSide;
+        targetH = Math.max(1, Math.round((origH * maxSide) / origW));
+      } else {
+        targetH = maxSide;
+        targetW = Math.max(1, Math.round((origW * maxSide) / origH));
+      }
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = targetW;
+    canvas.height = targetH;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, targetW, targetH);
+    return canvas.toDataURL(mimeType || "image/jpeg", quality);
+  }
+
+  async function prepareImageForFirestore(file, preferredMaxSide) {
+    const rawDataUrl = await readFileAsDataUrl(file);
+    if (new Blob([rawDataUrl]).size <= MAX_SAFE_IMAGE_BYTES) {
+      return rawDataUrl;
+    }
+
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const tiers = [
+          { side: preferredMaxSide || 1280, q: 0.85 },
+          { side: 1024, q: 0.78 },
+          { side: 800, q: 0.72 },
+          { side: 640, q: 0.65 },
+          { side: 480, q: 0.58 }
+        ];
+
+        let best = rawDataUrl;
+        for (let i = 0; i < tiers.length; i++) {
+          const candidate = encodeCanvas(img, tiers[i].side, tiers[i].q, "image/jpeg");
+          best = candidate;
+          if (new Blob([candidate]).size <= MAX_SAFE_IMAGE_BYTES) {
+            resolve(candidate);
+            return;
+          }
+        }
+        resolve(best);
+      };
+      img.onerror = () => reject(new Error("ไม่สามารถประมวลผลรูปภาพได้"));
+      img.src = rawDataUrl;
+    });
+  }
+
+  db.collection(DB_SITE).doc("admin").onSnapshot(doc => {
+    if (doc.exists) {
+      const d = doc.data();
+      if (d.email) currentAdminEmail = d.email;
+      if (d.pass) currentAdminPass = d.pass;
+    }
+  });
+
+  function handleAdminLogin() {
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+    const pass = document.getElementById('loginPass').value.trim();
+
+    if (email === currentAdminEmail.toLowerCase() && pass === currentAdminPass) {
+      document.getElementById('loginBox').classList.add('hidden');
+      document.getElementById('dashboardBox').classList.remove('hidden');
+      initAdminDashboard();
+    } else {
+      alert('อีเมลหรือรหัสผ่านแอดมินไม่ถูกต้องค่ะ ♡');
+    }
+  }
+
+  function switchTab(tabName, btnEl) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btnEl.classList.add('active');
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+  }
+
+  async function initAdminDashboard() {
+    const [cfgDoc, mediaDoc] = await Promise.all([
+      db.collection(DB_SITE).doc("config").get(),
+      db.collection(DB_SITE).doc("media").get()
+    ]);
+
+    const d = cfgDoc.exists ? cfgDoc.data() : {};
+    const m = mediaDoc.exists ? mediaDoc.data() : {};
+
+    document.getElementById('cfgShopName').value = d.shopName || "joonnoir";
+    document.getElementById('cfgShopBio').value = d.shopBio || DEFAULT_BIO_TEXT;
+    document.getElementById('cfgHighlightsTitle').value = d.highlightsTitle || "the love archive";
+    document.getElementById('cfgReviewsTitle').value = d.reviewsTitle || "รีวิวจากลูกค้าบ้านจุนจุน";
+    document.getElementById('cfgFooterText').value = d.footerText || "♡ Thank you for supporting joonnoir ♡";
+    document.getElementById('cfgMusic').value = d.musicUrl || DEFAULT_MUSIC_URL;
+
+    const curBanner = m.bannerImg || d.bannerImg || DEFAULT_BANNER_URL;
+    const curProfile = m.profileImg || d.profileImg || DEFAULT_PROFILE_URL;
+
+    pickedBannerDataUrl = curBanner;
+    pickedProfileDataUrl = curProfile;
+    document.getElementById('previewBanner').src = curBanner;
+    document.getElementById('previewProfile').src = curProfile;
+
+    document.getElementById('editAdminEmail').value = currentAdminEmail;
+
+    listenHighlightsAdmin();
+    listenReviewsAdmin();
+  }
+
+  async function handleSingleImagePick(event, target) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      const prepared = await prepareImageForFirestore(file, target === 'profile' ? 900 : 1280);
+      if (target === 'banner') {
+        pickedBannerDataUrl = prepared;
+        document.getElementById('previewBanner').src = prepared;
+      } else if (target === 'profile') {
+        pickedProfileDataUrl = prepared;
+        document.getElementById('previewProfile').src = prepared;
+      }
+    } catch (err) {
+      alert('เลือกรูปภาพไม่สำเร็จ: ' + err.message);
+    } finally {
+      event.target.value = '';
+    }
+  }
+
+  async function saveGeneralConfig() {
+    const btn = document.getElementById('btnSaveGeneral');
+    btn.disabled = true;
+    btn.textContent = 'กำลังบันทึกข้อมูล ♡';
+
+    const bannerFinal = pickedBannerDataUrl || DEFAULT_BANNER_URL;
+    const profileFinal = pickedProfileDataUrl || DEFAULT_PROFILE_URL;
+
+    try {
+      await db.collection(DB_SITE).doc("media").set({
+        bannerImg: bannerFinal,
+        profileImg: profileFinal,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      }, { merge: true });
+
+      const configPayload = {
+        shopName: document.getElementById('cfgShopName').value.trim() || "joonnoir",
+        shopBio: document.getElementById('cfgShopBio').value.trim(),
+        highlightsTitle: document.getElementById('cfgHighlightsTitle').value.trim() || "the love archive",
+        reviewsTitle: document.getElementById('cfgReviewsTitle').value.trim() || "รีวิวจากลูกค้าบ้านจุนจุน",
+        footerText: document.getElementById('cfgFooterText').value.trim() || "♡ Thank you for supporting joonnoir ♡",
+        musicUrl: document.getElementById('cfgMusic').value.trim() || DEFAULT_MUSIC_URL,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      if (new Blob([bannerFinal]).size <= MAX_SAFE_IMAGE_BYTES) {
+        configPayload.bannerImg = bannerFinal;
+      }
+      if (new Blob([profileFinal]).size <= MAX_SAFE_IMAGE_BYTES) {
+        configPayload.profileImg = profileFinal;
+      }
+
+      await db.collection(DB_SITE).doc("config").set(configPayload, { merge: true });
+      alert('บันทึกข้อมูลโปรไฟล์ร้านค้าเรียบร้อยแล้วค่ะ ♡');
+    } catch (err) {
+      alert('เกิดข้อผิดพลาด: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'บันทึกข้อมูลร้านค้า ♡';
+    }
+  }
+
+  async function handleNewHlCoverPick(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    try {
+      pickedNewHlCoverDataUrl = await prepareImageForFirestore(file, 900);
+      const imgEl = document.getElementById('previewNewHlCover');
+      imgEl.src = pickedNewHlCoverDataUrl;
+      imgEl.classList.remove('hidden');
+      document.getElementById('newHlCoverLabel').textContent = `เลือกปกเรียบร้อยแล้ว (${file.name}) ♡`;
+    } catch (err) {
+      alert('เลือกรูปปกไม่สำเร็จ: ' + err.message);
+    } finally {
+      event.target.value = '';
+    }
+  }
+
+  function handleNewHlMultiPick(event) {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+    pickedNewHlFiles = files;
+    document.getElementById('newHlImagesLabel').textContent = `เลือกไว้แล้วทั้งหมด ${files.length} รูป (พร้อมอัปโหลดไม่จำกัด) ♡`;
+  }
+
+  async function createNewHighlight() {
+    const title = document.getElementById('newHlTitle').value.trim();
+    if (!title) return alert('กรุณาตั้งชื่อไฮไลท์ก่อนนะคะ ♡');
+    if (pickedNewHlFiles.length === 0 && !pickedNewHlCoverDataUrl) {
+      return alert('กรุณาเลือกรูปภาพอย่างน้อย 1 รูปค่ะ ♡');
+    }
+
+    const btn = document.getElementById('btnCreateHl');
+    btn.disabled = true;
+
+    try {
+      let coverToSave = pickedNewHlCoverDataUrl;
+      if (!coverToSave && pickedNewHlFiles.length > 0) {
+        coverToSave = await prepareImageForFirestore(pickedNewHlFiles[0], 900);
+      }
+
+      const hlRef = await db.collection(DB_HIGHLIGHTS).add({
+        title: title,
+        cover: coverToSave,
+        order: Date.now(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      for (let i = 0; i < pickedNewHlFiles.length; i++) {
+        btn.textContent = `กำลังบันทึกรูปที่ ${i + 1} / ${pickedNewHlFiles.length} ♡`;
+        const imgDataUrl = await prepareImageForFirestore(pickedNewHlFiles[i], 1280);
+        await hlRef.collection("images").add({
+          dataUrl: imgDataUrl,
+          createdAt: Date.now() + i
+        });
+      }
+
+      document.getElementById('newHlTitle').value = '';
+      document.getElementById('newHlCoverFile').value = '';
+      document.getElementById('newHlImagesFile').value = '';
+      pickedNewHlCoverDataUrl = '';
+      pickedNewHlFiles = [];
+      document.getElementById('previewNewHlCover').classList.add('hidden');
+      document.getElementById('newHlCoverLabel').textContent = 'กดเลือกรูปปกจากในเครื่อง ♡';
+      document.getElementById('newHlImagesLabel').textContent = 'กดเลือกรูปภาพจากอัลบั้ม (ไม่จำกัดจำนวน) ♡';
+
+      alert(`สร้างไฮไลท์ "${title}" เรียบร้อยแล้วค่ะ ♡`);
+      renderHighlightsAdminList();
+    } catch (err) {
+      alert('เกิดข้อผิดพลาดในการสร้างไฮไลท์: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'สร้างไฮไลท์นี้ ♡';
+    }
+  }
+
+  function listenHighlightsAdmin() {
+    db.collection(DB_HIGHLIGHTS).orderBy("order", "asc").onSnapshot(() => {
+      renderHighlightsAdminList();
+    });
+  }
+
+  async function renderHighlightsAdminList() {
+    const container = document.getElementById('adminHighlightsList');
+    const snap = await db.collection(DB_HIGHLIGHTS).orderBy("order", "asc").get();
+
+    if (snap.empty) {
+      container.innerHTML = '<p style="text-align:center; font-size:13px; color:var(--text-muted); padding:14px;">ยังไม่มีไฮไลท์ในระบบ สามารถเพิ่มด้านบนได้เลยค่ะ ♡</p>';
+      return;
+    }
+
+    container.innerHTML = '';
+
+    for (const doc of snap.docs) {
+      const hl = doc.data();
+      const hlId = doc.id;
+
+      const imgSnap = await db.collection(DB_HIGHLIGHTS).doc(hlId).collection("images").orderBy("createdAt", "asc").get();
+      let thumbsHtml = '';
+      imgSnap.forEach(imgDoc => {
+        const imgData = imgDoc.data();
+        const src = imgData.dataUrl || imgData.url;
+        thumbsHtml += `
+          <div class="hl-thumb-item">
+            <img src="${src}" alt="img">
+            <button type="button" class="hl-thumb-del" title="ลบรูปนี้" onclick="deleteSingleHighlightImage('${hlId}', '${imgDoc.id}')">x</button>
+          </div>
+        `;
+      });
+
+      const card = document.createElement('div');
+      card.className = 'hl-admin-card';
+      card.innerHTML = `
+        <div class="hl-admin-header">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <img src="${hl.cover}" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid var(--charcoal-dark);">
+            <div>
+              <div style="font-weight:700; font-size:14.5px; color:var(--charcoal-dark);">${escapeHtml(hl.title)}</div>
+              <div style="font-size:11.5px; color:var(--text-muted);">จำนวนรูปด้านใน: <strong>${imgSnap.size}</strong> รูป (ไม่จำกัด) ♡</div>
+            </div>
+          </div>
+          <button type="button" class="btn-danger-sm" onclick="deleteEntireHighlight('${hlId}', '${escapeHtml(hl.title)}')">ลบไฮไลท์นี้</button>
+        </div>
+
+        <div style="margin-top:8px;">
+          <input type="file" id="append-file-${hlId}" accept="image/*" multiple style="display:none;" onchange="appendFilesToHighlight(event, '${hlId}')">
+          <button type="button" id="append-btn-${hlId}" class="btn btn-secondary" style="padding:9px; font-size:12.5px; margin-top:4px;" onclick="document.getElementById('append-file-${hlId}').click()">+ เลือกรูปภาพจากเครื่องเพิ่มเข้าไฮไลท์นี้ (ไม่จำกัด) ♡</button>
+        </div>
+
+        <div class="hl-thumb-grid">
+          ${thumbsHtml}
+        </div>
+      `;
+      container.appendChild(card);
+    }
+  }
+
+  async function appendFilesToHighlight(event, hlId) {
+    const files = Array.from(event.target.files || []);
+    if (files.length === 0) return;
+
+    const btn = document.getElementById(`append-btn-${hlId}`);
+    if (btn) btn.disabled = true;
+
+    try {
+      for (let i = 0; i < files.length; i++) {
+        if (btn) btn.textContent = `กำลังเพิ่มรูปที่ ${i + 1} / ${files.length} ♡`;
+        const imgDataUrl = await prepareImageForFirestore(files[i], 1280);
+        await db.collection(DB_HIGHLIGHTS).doc(hlId).collection("images").add({
+          dataUrl: imgDataUrl,
+          createdAt: Date.now() + i
+        });
+      }
+
+      alert(`เพิ่มรูปภาพอีก ${files.length} รูปเรียบร้อยแล้วค่ะ ♡`);
+      renderHighlightsAdminList();
+    } catch (err) {
+      alert('เกิดข้อผิดพลาด: ' + err.message);
+    } finally {
+      event.target.value = '';
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = '+ เลือกรูปภาพจากเครื่องเพิ่มเข้าไฮไลท์นี้ (ไม่จำกัด) ♡';
+      }
+    }
+  }
+
+  async function deleteSingleHighlightImage(hlId, imgId) {
+    if (!confirm('ต้องการลบรูปภาพนี้ออกจากไฮไลท์ใช่ไหมคะ? ♡')) return;
+    await db.collection(DB_HIGHLIGHTS).doc(hlId).collection("images").doc(imgId).delete();
+    renderHighlightsAdminList();
+  }
+
+  async function deleteEntireHighlight(hlId, title) {
+    if (!confirm(`ต้องการลบไฮไลท์ "${title}" และรูปภาพทั้งหมดในหมวดนี้ใช่ไหมคะ? ♡`)) return;
+
+    const imgSnap = await db.collection(DB_HIGHLIGHTS).doc(hlId).collection("images").get();
+    const batch = db.batch();
+    imgSnap.forEach(d => batch.delete(d.ref));
+    batch.delete(db.collection(DB_HIGHLIGHTS).doc(hlId));
+    await batch.commit();
+
+    alert(`ลบไฮไลท์ "${title}" เรียบร้อยแล้วค่ะ ♡`);
+    renderHighlightsAdminList();
+  }
+
+  function listenReviewsAdmin() {
+    db.collection(DB_REVIEWS).orderBy("createdAt", "desc").onSnapshot(snap => {
+      const box = document.getElementById('adminReviewsList');
+      if (snap.empty) {
+        box.innerHTML = '<p style="text-align:center; font-size:13px; color:var(--text-muted); padding:14px;">ยังไม่มีรีวิวในระบบค่ะ ♡</p>';
+        return;
+      }
+
+      let html = '';
+      snap.forEach(doc => {
+        const d = doc.data();
+        const stars = '★'.repeat(d.rating || 5);
+        html += `
+          <div class="rev-admin-item">
+            <div style="flex:1;">
+              <div style="font-weight:700; font-size:13.5px; color:var(--charcoal-dark);">
+                ${escapeHtml(d.name)} <span style="color:#666666; font-size:12px;">${stars}</span>
+                <span style="font-size:11px; color:var(--text-muted); font-weight:400;">(${escapeHtml(d.shortDate || '')})</span>
+              </div>
+              <div style="font-size:12.5px; color:var(--text-main); margin-top:4px; white-space:pre-line;">${escapeHtml(d.text)}</div>
+            </div>
+            <button type="button" class="btn-danger-sm" onclick="deleteReview('${doc.id}')">ลบ</button>
+          </div>
+        `;
+      });
+      box.innerHTML = html;
+    });
+  }
+
+  async function deleteReview(revId) {
+    if (!confirm('ต้องการลบรีวิวนี้ใช่ไหมคะ? ♡')) return;
+    await db.collection(DB_REVIEWS).doc(revId).delete();
+  }
+
+  async function updateAdminAccount() {
+    const newEmail = document.getElementById('editAdminEmail').value.trim();
+    const newPass = document.getElementById('editAdminPass').value.trim();
+    const payload = {};
+    if (newEmail) { payload.email = newEmail; currentAdminEmail = newEmail; }
+    if (newPass) { payload.pass = newPass; currentAdminPass = newPass; }
+
+    await db.collection(DB_SITE).doc("admin").set(payload, { merge: true });
+    document.getElementById('editAdminPass').value = '';
+    alert('อัปเดตข้อมูลบัญชีแอดมินเรียบร้อยแล้วค่ะ ♡');
+  }
+
+  function logoutAdmin() {
+    document.getElementById('dashboardBox').classList.add('hidden');
+    document.getElementById('loginBox').classList.remove('hidden');
+    document.getElementById('loginPass').value = '';
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+</script>
+</body>
+</html>
