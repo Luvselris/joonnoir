@@ -352,7 +352,7 @@
           <div class="file-picker-box" onclick="document.getElementById('bannerFileInput').click()">
             <div class="file-picker-title">กดเลือกรูปแบนเนอร์จากในเครื่อง ♡</div>
             <div class="file-picker-sub">ไม่จำกัดขนาดและปรับขนาดอัตโนมัติเฉพาะไฟล์ใหญ่เกินลิมิต</div>
-            <img id="previewBanner" class="preview-single-img" src="https://files.catbox.moe/vc7n8m.gif" alt="Banner">
+            <img id="previewBanner" class="preview-single-img" src="https://files.catbox.moe/3sjpq9.jpeg" alt="Banner">
           </div>
           <input type="file" id="bannerFileInput" accept="image/*" style="display:none;" onchange="handleSingleImagePick(event, 'banner')">
         </div>
@@ -463,8 +463,8 @@
 
   const MAX_SAFE_IMAGE_BYTES = 720000;
 
-  const DEFAULT_BANNER_URL = "https://files.catbox.moe/vc7n8m.gif";
   const DEFAULT_PROFILE_URL = "https://files.catbox.moe/3sjpq9.jpeg";
+  const DEFAULT_BANNER_URL = "https://files.catbox.moe/3sjpq9.jpeg";
   const DEFAULT_BIO_TEXT = "joonnoir 𐙚\na little shop for k-pop lovers\nphotocards • k-pop goods • premium apps\ndigital services & more ♡\nmade with love, packed with care";
   const DEFAULT_MUSIC_URL = "https://file.garden/asG8Gt-rqWIpi3II/BTS%20(%E1%84%87%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%AB%E1%84%89%E1%85%A9%E1%84%82%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB)%20-%20Heartbeat%20(Color%20Coded%20Lyrics%20Eng%20Rom%20Han%20%E1%84%80%E1%85%A1%E1%84%89%E1%85%A1).mp3";
 
@@ -856,15 +856,17 @@
       let html = '';
       snap.forEach(doc => {
         const d = doc.data();
-        const stars = '★'.repeat(d.rating || 5);
+        const stars = '★'.repeat(d.stars || d.rating || 5);
+        const text = d.feedback || d.text || '';
+        const dateLabel = d.dateStr || d.shortDate || '';
         html += `
           <div class="rev-admin-item">
             <div style="flex:1;">
               <div style="font-weight:700; font-size:13.5px; color:var(--charcoal-dark);">
                 ${escapeHtml(d.name)} <span style="color:#666666; font-size:12px;">${stars}</span>
-                <span style="font-size:11px; color:var(--text-muted); font-weight:400;">(${escapeHtml(d.shortDate || '')})</span>
+                <span style="font-size:11px; color:var(--text-muted); font-weight:400;">(${escapeHtml(dateLabel)})</span>
               </div>
-              <div style="font-size:12.5px; color:var(--text-main); margin-top:4px; white-space:pre-line;">${escapeHtml(d.text)}</div>
+              <div style="font-size:12.5px; color:var(--text-main); margin-top:4px; white-space:pre-line;">${escapeHtml(text)}</div>
             </div>
             <button type="button" class="btn-danger-sm" onclick="deleteReview('${doc.id}')">ลบ</button>
           </div>
