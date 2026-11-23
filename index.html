@@ -37,7 +37,7 @@
     }
 
     body {
-      background: radial-gradient(circle at top, var(--surface-white) 0%, var(--bg-light) 45%, var(--bg-mist) 82%, var(--bg-sage-gray) 100%);
+      background: radial-gradient(circle at top, var(--surface-white) 0%, var(--bg-light) 48%, var(--bg-mist) 85%, var(--bg-sage-gray) 100%);
       color: var(--text-main);
       min-height: 100vh;
       display: flex;
@@ -52,99 +52,101 @@
       position: relative;
     }
 
-    .glass-card {
+    /* การ์ดที่ 1: โปรไฟล์ & ไบโอ */
+    .header-card {
       background: var(--card-bg);
-      border: 1.5px solid var(--surface-white);
-      border-radius: 26px;
-      padding: 16px;
-      box-shadow: var(--shadow-soft);
       backdrop-filter: blur(12px);
-      margin-bottom: 14px;
+      border-radius: 28px;
+      padding: 14px 16px 22px;
+      box-shadow: var(--shadow-soft);
+      border: 1.5px solid var(--surface-white);
+      text-align: center;
+      margin-bottom: 16px;
     }
 
-    .banner-wrap {
+    .banner-img {
       width: 100%;
-      height: 146px;
+      height: 142px;
       border-radius: 20px;
-      overflow: hidden;
+      object-fit: cover;
       background: var(--bg-mist);
       border: 1.5px solid var(--surface-white);
-    }
-
-    .banner-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
       display: block;
     }
 
     .profile-wrap {
-      position: relative;
       margin-top: -46px;
-      text-align: center;
       display: flex;
       justify-content: center;
+      position: relative;
+      z-index: 2;
     }
 
-    .profile-wrap img {
+    .profile-img {
       width: 92px;
       height: 92px;
       border-radius: 50%;
       object-fit: cover;
       border: 3.5px solid var(--surface-white);
-      box-shadow: 0 6px 18px rgba(102, 102, 102, 0.2);
+      box-shadow: 0 6px 18px rgba(102, 102, 102, 0.22);
       background: var(--surface-white);
       display: block;
     }
 
-    .shop-name-title {
-      font-size: 21px;
+    .store-name {
+      font-size: 22px;
       font-weight: 700;
       color: var(--charcoal-dark);
       margin-top: 10px;
-      text-align: center;
       letter-spacing: 0.4px;
     }
 
-    .shop-bio-box {
-      background: var(--bg-light);
-      border: 1px solid var(--border-soft);
-      border-radius: 18px;
-      padding: 13px 15px;
+    .store-bio {
       font-size: 13px;
       color: var(--text-muted);
-      margin-top: 10px;
+      margin-top: 8px;
       line-height: 1.75;
       white-space: pre-line;
-      text-align: center;
+      padding: 0 8px;
     }
 
-    .highlights-section {
-      margin-top: 16px;
-      padding-top: 4px;
+    /* การ์ดแยกส่วน (ไฮไลท์ / รีวิว) */
+    .section-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border-radius: 26px;
+      padding: 18px 16px;
+      box-shadow: var(--shadow-soft);
+      border: 1.5px solid var(--surface-white);
+      margin-bottom: 16px;
     }
 
-    .highlights-label {
-      font-size: 13.5px;
+    .section-title {
+      font-size: 15px;
       font-weight: 700;
       color: var(--charcoal-dark);
-      margin-bottom: 11px;
+      margin-bottom: 14px;
       text-align: center;
     }
 
-    .highlights-scroll {
+    .highlights-container {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       overflow-x: auto;
-      padding-bottom: 4px;
+      padding: 4px 2px 8px;
       scrollbar-width: none;
+      justify-content: flex-start;
     }
 
-    .highlights-scroll::-webkit-scrollbar {
+    .highlights-container.centered {
+      justify-content: center;
+    }
+
+    .highlights-container::-webkit-scrollbar {
       display: none;
     }
 
-    .hl-item {
+    .highlight-item {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -153,21 +155,21 @@
       cursor: pointer;
     }
 
-    .hl-ring {
-      width: 64px;
-      height: 64px;
+    .highlight-ring {
+      width: 66px;
+      height: 66px;
       border-radius: 50%;
       padding: 2.5px;
       background: linear-gradient(135deg, var(--silver-mid), var(--charcoal-dark));
-      box-shadow: 0 4px 10px rgba(102, 102, 102, 0.2);
-      transition: transform 0.15s;
+      box-shadow: 0 4px 12px rgba(102, 102, 102, 0.2);
+      transition: transform 0.2s ease;
     }
 
-    .hl-item:active .hl-ring {
-      transform: scale(0.93);
+    .highlight-item:active .highlight-ring {
+      transform: scale(0.94);
     }
 
-    .hl-ring img {
+    .highlight-thumb {
       width: 100%;
       height: 100%;
       border-radius: 50%;
@@ -177,8 +179,9 @@
       display: block;
     }
 
-    .hl-title {
-      font-size: 11px;
+    .highlight-label {
+      font-size: 11.5px;
+      font-weight: 600;
       color: var(--text-main);
       margin-top: 6px;
       text-align: center;
@@ -186,57 +189,106 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      font-weight: 600;
     }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* รายการรีวิว */
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 2px;
     }
 
-    .stat-card {
-      background: var(--card-bg);
-      border: 1.5px solid var(--surface-white);
-      border-radius: 22px;
-      padding: 14px 10px;
-      text-align: center;
-      box-shadow: var(--shadow-soft);
+    .review-bubble {
+      background: var(--surface-white);
+      border-radius: 18px;
+      padding: 12px 14px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 3px 10px rgba(102, 102, 102, 0.06);
     }
 
-    .stat-number {
-      font-size: 22px;
+    .review-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .review-name {
+      font-size: 13.5px;
       font-weight: 700;
-      color: var(--charcoal-dark);
+      color: var(--text-main);
+      word-break: break-word;
     }
 
-    .stat-label {
-      font-size: 11.5px;
+    .review-stars {
+      font-size: 12.5px;
+      color: var(--charcoal-dark);
+      letter-spacing: 1px;
+      flex-shrink: 0;
+    }
+
+    .review-desc {
+      font-size: 12.5px;
       color: var(--text-muted);
-      margin-top: 2px;
-      font-weight: 600;
+      margin-top: 5px;
+      line-height: 1.55;
+      white-space: pre-line;
+      word-break: break-word;
     }
 
-    .review-form-title {
-      font-size: 15.5px;
-      font-weight: 700;
-      color: var(--charcoal-dark);
-      text-align: center;
+    .review-time {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    /* ฟอร์มส่งรีวิวในส่วนเดียวกัน */
+    .review-form-box {
+      border-top: 1.5px dashed var(--border-soft);
+      padding-top: 14px;
+    }
+
+    .star-select-box {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
       margin-bottom: 12px;
+    }
+
+    .star-btn {
+      background: none;
+      border: none;
+      font-size: 26px;
+      color: #d0d0d0;
+      cursor: pointer;
+      transition: transform 0.15s, color 0.15s;
+      user-select: none;
+    }
+
+    .star-btn.active {
+      color: var(--charcoal-dark);
+      transform: scale(1.1);
+    }
+
+    .form-group {
+      margin-bottom: 10px;
     }
 
     .input-field, .textarea-field {
       width: 100%;
-      background: var(--bg-light);
+      padding: 11px 14px;
       border: 1.5px solid var(--border-soft);
       border-radius: 16px;
-      padding: 11px 14px;
       font-size: 13px;
+      background: var(--bg-light);
       color: var(--text-main);
       outline: none;
-      margin-bottom: 10px;
-      transition: border-color 0.2s, background 0.2s;
+      transition: all 0.2s;
     }
 
     .input-field:focus, .textarea-field:focus {
@@ -245,230 +297,170 @@
     }
 
     .textarea-field {
-      min-height: 82px;
+      min-height: 78px;
       resize: vertical;
     }
 
-    .star-selector {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin: 4px 0 12px;
-    }
-
-    .star-btn {
-      font-size: 28px;
-      color: #d4d4d4;
-      cursor: pointer;
-      transition: transform 0.15s, color 0.15s;
-      user-select: none;
-    }
-
-    .star-btn.active {
-      color: var(--charcoal-dark);
-    }
-
-    .star-btn:active {
-      transform: scale(1.2);
-    }
-
-    .btn-submit-review {
+    .submit-btn {
       width: 100%;
-      background: linear-gradient(135deg, #7c7c7c 0%, var(--charcoal-dark) 100%);
+      background: linear-gradient(135deg, #7c7c7c, var(--charcoal-dark));
       color: var(--surface-white);
       border: none;
+      padding: 12px;
       border-radius: 20px;
-      padding: 13px;
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 6px 18px rgba(102, 102, 102, 0.25);
-      transition: transform 0.15s;
+      box-shadow: 0 6px 16px rgba(102, 102, 102, 0.24);
+      transition: all 0.2s;
     }
 
-    .btn-submit-review:active {
+    .submit-btn:active {
       transform: scale(0.98);
     }
 
-    .btn-submit-review:disabled {
+    .submit-btn:disabled {
       opacity: 0.65;
       cursor: not-allowed;
     }
 
-    .reviews-header {
-      font-size: 14.5px;
-      font-weight: 700;
-      color: var(--charcoal-dark);
-      margin-bottom: 12px;
-      text-align: center;
-    }
-
-    .review-item-card {
-      background: var(--surface-white);
-      border: 1.5px solid var(--border-soft);
-      border-radius: 18px;
-      padding: 13px 14px;
-      margin-bottom: 10px;
-      box-shadow: 0 3px 10px rgba(102, 102, 102, 0.06);
-    }
-
-    .review-top-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 8px;
-      margin-bottom: 5px;
-    }
-
-    .reviewer-name {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: var(--text-main);
-      word-break: break-word;
-    }
-
-    .review-meta-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      flex-shrink: 0;
-    }
-
-    .review-stars-display {
-      font-size: 12.5px;
-      color: var(--charcoal-dark);
-      letter-spacing: 1px;
-      line-height: 1.2;
-    }
-
-    .review-date-short {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-top: 2px;
-    }
-
-    .review-body-text {
-      font-size: 12.5px;
-      color: var(--text-muted);
-      line-height: 1.55;
-      white-space: pre-line;
-      word-break: break-word;
-    }
-
-    .footer-thank-you {
+    .footer-note {
       text-align: center;
       font-size: 11.5px;
       color: var(--text-muted);
-      margin-top: 16px;
+      margin-top: 12px;
       font-weight: 500;
     }
 
-    /* Story / Highlight Viewer Modal */
+    /* Story Viewer Modal */
     .story-modal {
+      display: none;
       position: fixed;
       inset: 0;
       background: rgba(58, 58, 58, 0.94);
       z-index: 99999;
-      display: none;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 14px 12px 24px;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(8px);
+      padding: 14px;
     }
 
     .story-modal.open {
       display: flex;
     }
 
-    .story-progress-bar {
-      display: flex;
-      gap: 4px;
+    .story-card {
       width: 100%;
-      max-width: 480px;
-      margin: 0 auto 10px;
+      max-width: 420px;
+      height: 88vh;
+      max-height: 780px;
+      position: relative;
+      background: #3a3a3a;
+      border-radius: 24px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
     }
 
-    .story-seg {
+    .story-bars {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      gap: 4px;
+      z-index: 10;
+    }
+
+    .story-bar {
       flex: 1;
       height: 3.5px;
-      background: rgba(251, 251, 251, 0.3);
+      background: rgba(251, 251, 251, 0.32);
       border-radius: 4px;
       overflow: hidden;
     }
 
-    .story-seg.done {
+    .story-bar.done {
       background: var(--surface-white);
     }
 
-    .story-seg.active {
+    .story-bar.active {
       background: var(--silver-mid);
     }
 
     .story-header {
+      position: absolute;
+      top: 24px;
+      left: 14px;
+      right: 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
+      z-index: 10;
       color: var(--surface-white);
     }
 
-    .story-info {
+    .story-header-left {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .story-info img {
+    .story-header-thumb {
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      object-fit: cover;
       border: 1.5px solid var(--surface-white);
+      object-fit: cover;
+    }
+
+    .story-header-name {
+      font-size: 14px;
+      font-weight: 700;
     }
 
     .story-close-btn {
-      background: rgba(251, 251, 251, 0.16);
+      background: rgba(251, 251, 251, 0.18);
       border: none;
       color: var(--surface-white);
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
       font-size: 16px;
       font-weight: 700;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
       cursor: pointer;
-    }
-
-    .story-media-stage {
-      flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
-      width: 100%;
-      max-width: 540px;
-      margin: 10px auto;
-      overflow: hidden;
     }
 
-    .story-media-stage img {
+    .story-image-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 56px 12px 36px;
+    }
+
+    .story-image {
       max-width: 100%;
-      max-height: 78vh;
+      max-height: 100%;
       width: auto;
       height: auto;
       object-fit: contain;
       border-radius: 14px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
     }
 
     .story-tap-left, .story-tap-right {
       position: absolute;
-      top: 0;
+      top: 56px;
       bottom: 0;
-      width: 42%;
-      cursor: pointer;
+      width: 45%;
       z-index: 5;
+      cursor: pointer;
     }
 
     .story-tap-left {
@@ -480,10 +472,15 @@
     }
 
     .story-footer-counter {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
       text-align: center;
       color: rgba(251, 251, 251, 0.88);
       font-size: 12px;
       font-weight: 600;
+      z-index: 10;
     }
   </style>
 </head>
@@ -494,91 +491,82 @@
 
   <div class="container">
 
-    <!-- 1. การ์ดโปรไฟล์ + ไฮไลท์ -->
-    <div class="glass-card">
-      <div class="banner-wrap">
-        <img id="bannerImg" src="https://files.catbox.moe/vc7n8m.gif" alt="Banner">
-      </div>
+    <!-- 1. การ์ดโปรไฟล์ & ไบโอ -->
+    <div class="header-card">
+      <img id="mainBanner" src="https://files.catbox.moe/3sjpq9.jpeg" alt="Banner" class="banner-img">
       <div class="profile-wrap">
-        <img id="profileImg" src="https://files.catbox.moe/3sjpq9.jpeg" alt="Profile">
+        <img id="mainProfile" src="https://files.catbox.moe/3sjpq9.jpeg" alt="Profile" class="profile-img">
       </div>
-      <h1 class="shop-name-title" id="shopNameText">joonnoir</h1>
-      <div class="shop-bio-box" id="shopBioText">joonnoir 𐙚
+      <h1 class="store-name" id="mainStoreName">joonnoir</h1>
+      <p class="store-bio" id="mainStoreBio">joonnoir 𐙚
 a little shop for k-pop lovers
 photocards • k-pop goods • premium apps
 digital services & more ♡
-made with love, packed with care</div>
+made with love, packed with care</p>
+    </div>
 
-      <!-- แถบ Highlights -->
-      <div class="highlights-section" id="highlightsWrapper">
-        <div class="highlights-label" id="highlightsSectionTitle">the love archive</div>
-        <div class="highlights-scroll" id="highlightsContainer">
-          <div style="font-size:12px; color:var(--text-muted); padding:4px 0;">ยังไม่มีรายการไฮไลท์ ♡</div>
+    <!-- 2. การ์ดไฮไลท์ (รองรับไม่จำกัดจำนวน) -->
+    <div class="section-card">
+      <div class="section-title" id="highlightsSectionTitle">the love archive</div>
+      <div class="highlights-container" id="highlightsContainer">
+        <p style="width:100%; text-align:center; color:var(--text-muted); font-size:12.5px;">ยังไม่มีรายการไฮไลท์ ♡</p>
+      </div>
+    </div>
+
+    <!-- 3. การ์ดรีวิวลูกค้า + ฟอร์มส่งรีวิว -->
+    <div class="section-card">
+      <div class="section-title" id="reviewsSectionTitle">รีวิวจากลูกค้าบ้านจุนจุน</div>
+
+      <div class="reviews-list" id="reviewsContainer">
+        <p style="text-align:center; color:var(--text-muted); font-size:13px; padding:12px;">กำลังโหลดรีวิว ♡</p>
+      </div>
+
+      <div class="review-form-box">
+        <div class="star-select-box" id="starSelector">
+          <button type="button" class="star-btn active" data-val="1" onclick="setStars(1)">★</button>
+          <button type="button" class="star-btn active" data-val="2" onclick="setStars(2)">★</button>
+          <button type="button" class="star-btn active" data-val="3" onclick="setStars(3)">★</button>
+          <button type="button" class="star-btn active" data-val="4" onclick="setStars(4)">★</button>
+          <button type="button" class="star-btn active" data-val="5" onclick="setStars(5)">★</button>
         </div>
+
+        <div class="form-group">
+          <input type="text" class="input-field" id="customerName" placeholder="ชื่อของคุณ ♡" maxlength="40">
+        </div>
+
+        <div class="form-group">
+          <textarea class="textarea-field" id="customerFeedback" rows="3" placeholder="เขียนรีวิวให้บ้านจุนจุนได้เลยนะคะ ♡" maxlength="400"></textarea>
+        </div>
+
+        <button type="button" class="submit-btn" id="submitBtn" onclick="sendReview()">ส่งรีวิว ♡</button>
       </div>
     </div>
 
-    <!-- 2. การ์ดสรุปจำนวนรีวิว & คะแนนเฉลี่ย -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-number" id="totalReviewsCount">0</div>
-        <div class="stat-label">Total Reviews ♡</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="avgRatingValue">5.0</div>
-        <div class="stat-label">Rating ♡</div>
-      </div>
-    </div>
-
-    <!-- 3. กล่องส่งรีวิว -->
-    <div class="glass-card">
-      <div class="review-form-title" id="reviewFormTitle">review joonnoir ♡</div>
-      <input type="text" id="revNameInput" class="input-field" placeholder="ชื่อของคุณ ♡" maxlength="40">
-
-      <div class="star-selector" id="starSelector">
-        <span class="star-btn active" data-val="1" onclick="selectStar(1)">★</span>
-        <span class="star-btn active" data-val="2" onclick="selectStar(2)">★</span>
-        <span class="star-btn active" data-val="3" onclick="selectStar(3)">★</span>
-        <span class="star-btn active" data-val="4" onclick="selectStar(4)">★</span>
-        <span class="star-btn active" data-val="5" onclick="selectStar(5)">★</span>
-      </div>
-
-      <textarea id="revTextInput" class="textarea-field" placeholder="เขียนรีวิวให้บ้านจุนจุนได้เลยนะคะ ♡" maxlength="400"></textarea>
-      <button type="button" class="btn-submit-review" id="btnSubmitReview" onclick="submitReview()">sent review ♡</button>
-    </div>
-
-    <!-- 4. กล่องแสดงรีวิวทั้งหมด -->
-    <div class="glass-card">
-      <div class="reviews-header" id="reviewsSectionTitle">รีวิวจากลูกค้าบ้านจุนจุน</div>
-      <div id="reviewsListContainer">
-        <p style="text-align:center; color:var(--text-muted); font-size:13px; padding:16px;">กำลังโหลดรีวิว ♡</p>
-      </div>
-    </div>
-
-    <div class="footer-thank-you" id="footerThankYouText">♡ Thank you for supporting joonnoir ♡</div>
+    <div class="footer-note" id="footerThankYouText">♡ Thank you for supporting joonnoir ♡</div>
 
   </div>
 
-  <!-- Story / Highlight Viewer Modal -->
+  <!-- Story Viewer Modal -->
   <div class="story-modal" id="storyModal">
-    <div>
-      <div class="story-progress-bar" id="storyProgressBar"></div>
+    <div class="story-card">
+      <div class="story-bars" id="storyBars"></div>
+
       <div class="story-header">
-        <div class="story-info">
-          <img id="storyCoverThumb" src="" alt="">
-          <span id="storyTitleText" style="font-weight:700; font-size:14px;"></span>
+        <div class="story-header-left">
+          <img id="storyHeaderThumb" class="story-header-thumb" src="" alt="">
+          <span id="storyHeaderName" class="story-header-name">Highlight</span>
         </div>
-        <button type="button" class="story-close-btn" onclick="closeStoryModal()">x</button>
+        <button type="button" class="story-close-btn" onclick="closeStory()">✕</button>
       </div>
-    </div>
 
-    <div class="story-media-stage">
-      <div class="story-tap-left" onclick="prevStorySlide()"></div>
-      <img id="storyFullImg" src="" alt="Highlight Image">
-      <div class="story-tap-right" onclick="nextStorySlide()"></div>
-    </div>
+      <div class="story-image-container">
+        <img id="storyImage" class="story-image" src="" alt="">
+        <div class="story-tap-left" onclick="prevStoryImage()"></div>
+        <div class="story-tap-right" onclick="nextStoryImage()"></div>
+      </div>
 
-    <div class="story-footer-counter" id="storyCounterText">1 / 1</div>
+      <div class="story-footer-counter" id="storyCounterText">1 / 1</div>
+    </div>
   </div>
 
   <script>
@@ -594,19 +582,19 @@ made with love, packed with care</div>
     if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    // แยกคอลเลกชันเฉพาะของร้าน joonnoir
     const DB_SITE = "joonnoir_site";
     const DB_REVIEWS = "joonnoir_reviews";
     const DB_HIGHLIGHTS = "joonnoir_highlights";
 
-    const DEFAULT_BANNER_URL = "https://files.catbox.moe/vc7n8m.gif";
     const DEFAULT_PROFILE_URL = "https://files.catbox.moe/3sjpq9.jpeg";
+    const DEFAULT_BANNER_URL = "https://files.catbox.moe/3sjpq9.jpeg";
+    const DEFAULT_BIO_TEXT = "joonnoir 𐙚\na little shop for k-pop lovers\nphotocards • k-pop goods • premium apps\ndigital services & more ♡\nmade with love, packed with care";
     const DEFAULT_MUSIC_URL = "https://file.garden/asG8Gt-rqWIpi3II/BTS%20(%E1%84%87%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%AB%E1%84%89%E1%85%A9%E1%84%82%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB)%20-%20Heartbeat%20(Color%20Coded%20Lyrics%20Eng%20Rom%20Han%20%E1%84%80%E1%85%A1%E1%84%89%E1%85%A1).mp3";
 
-    let selectedRating = 5;
     let highlightsMap = {};
     let activeStoryId = null;
     let activeStoryIndex = 0;
+    let currentRating = 5;
 
     let latestConfigData = {};
     let latestMediaData = {};
@@ -626,13 +614,11 @@ made with love, packed with care</div>
       const m = latestMediaData || {};
 
       const shopName = d.shopName || "joonnoir";
-      document.getElementById('shopNameText').textContent = shopName;
+      document.getElementById('mainStoreName').textContent = shopName;
       document.getElementById('pageTitle').textContent = shopName + " ♡";
-      const cleanName = shopName.replace(/♡/g, '').trim() || "joonnoir";
-      document.getElementById('reviewFormTitle').textContent = `review ${cleanName} ♡`;
 
       if (d.shopBio !== undefined && d.shopBio !== "") {
-        document.getElementById('shopBioText').textContent = d.shopBio;
+        document.getElementById('mainStoreBio').textContent = d.shopBio;
       }
       if (d.highlightsTitle) {
         document.getElementById('highlightsSectionTitle').textContent = d.highlightsTitle;
@@ -644,11 +630,15 @@ made with love, packed with care</div>
         document.getElementById('footerThankYouText').textContent = d.footerText;
       }
 
-      const bannerSrc = m.bannerImg || d.bannerImg || DEFAULT_BANNER_URL;
-      document.getElementById('bannerImg').src = bannerSrc;
+      const bannerEl = document.getElementById('mainBanner');
+      const bannerSrc = m.bannerImg || d.bannerImg;
+      bannerEl.onerror = () => { bannerEl.src = DEFAULT_BANNER_URL; };
+      bannerEl.src = bannerSrc || DEFAULT_BANNER_URL;
 
-      const profileSrc = m.profileImg || d.profileImg || DEFAULT_PROFILE_URL;
-      document.getElementById('profileImg').src = profileSrc;
+      const profileEl = document.getElementById('mainProfile');
+      const profileSrc = m.profileImg || d.profileImg;
+      profileEl.onerror = () => { profileEl.src = DEFAULT_PROFILE_URL; };
+      profileEl.src = profileSrc || DEFAULT_PROFILE_URL;
 
       const targetMusic = d.musicUrl || DEFAULT_MUSIC_URL;
       if (targetMusic && music.src !== targetMusic) {
@@ -674,11 +664,13 @@ made with love, packed with care</div>
       const container = document.getElementById('highlightsContainer');
 
       if (snap.empty) {
-        container.innerHTML = '<div style="font-size:12px; color:var(--text-muted); padding:4px 0;">ยังไม่มีรายการไฮไลท์ ♡</div>';
+        container.classList.add('centered');
+        container.innerHTML = '<p style="width:100%; text-align:center; color:var(--text-muted); font-size:12.5px;">ยังไม่มีรายการไฮไลท์ ♡</p>';
         highlightsMap = {};
         return;
       }
 
+      container.classList.toggle('centered', snap.size <= 3);
       container.innerHTML = '';
       highlightsMap = {};
 
@@ -702,19 +694,19 @@ made with love, packed with care</div>
         };
 
         const itemDiv = document.createElement('div');
-        itemDiv.className = 'hl-item';
-        itemDiv.onclick = () => openStoryModal(hlId);
+        itemDiv.className = 'highlight-item';
+        itemDiv.onclick = () => openStory(hlId);
         itemDiv.innerHTML = `
-          <div class="hl-ring">
-            <img src="${highlightsMap[hlId].cover}" alt="${escapeHtml(highlightsMap[hlId].title)}">
+          <div class="highlight-ring">
+            <img src="${highlightsMap[hlId].cover}" class="highlight-thumb" alt="${escapeHtml(highlightsMap[hlId].title)}">
           </div>
-          <div class="hl-title">${escapeHtml(highlightsMap[hlId].title)}</div>
+          <div class="highlight-label">${escapeHtml(highlightsMap[hlId].title)}</div>
         `;
         container.appendChild(itemDiv);
       }
     });
 
-    function openStoryModal(hlId) {
+    function openStory(hlId) {
       const hl = highlightsMap[hlId];
       if (!hl || hl.images.length === 0) {
         alert('ไฮไลท์นี้ยังไม่มีรูปภาพด้านในค่ะ ♡');
@@ -722,153 +714,150 @@ made with love, packed with care</div>
       }
       activeStoryId = hlId;
       activeStoryIndex = 0;
-      document.getElementById('storyCoverThumb').src = hl.cover;
-      document.getElementById('storyTitleText').textContent = hl.title;
-      renderStorySlide();
+
+      document.getElementById('storyHeaderThumb').src = hl.cover;
+      document.getElementById('storyHeaderName').textContent = hl.title;
+
+      const barsBox = document.getElementById('storyBars');
+      barsBox.innerHTML = '';
+      hl.images.forEach((_, idx) => {
+        const b = document.createElement('div');
+        b.className = 'story-bar' + (idx === 0 ? ' active' : '');
+        b.id = `storyBar_${idx}`;
+        barsBox.appendChild(b);
+      });
+
       document.getElementById('storyModal').classList.add('open');
+      showStorySlide();
     }
 
-    function closeStoryModal() {
-      document.getElementById('storyModal').classList.remove('open');
-      activeStoryId = null;
-    }
-
-    function renderStorySlide() {
+    function showStorySlide() {
       const hl = highlightsMap[activeStoryId];
       if (!hl) return;
       const total = hl.images.length;
-      const url = hl.images[activeStoryIndex];
 
-      document.getElementById('storyFullImg').src = url;
+      if (activeStoryIndex >= total) {
+        closeStory();
+        return;
+      }
+
+      document.getElementById('storyImage').src = hl.images[activeStoryIndex];
       document.getElementById('storyCounterText').textContent = `${activeStoryIndex + 1} / ${total}`;
 
-      const bar = document.getElementById('storyProgressBar');
-      bar.innerHTML = '';
       for (let i = 0; i < total; i++) {
-        const seg = document.createElement('div');
-        seg.className = 'story-seg' + (i < activeStoryIndex ? ' done' : (i === activeStoryIndex ? ' active' : ''));
-        bar.appendChild(seg);
+        const bar = document.getElementById(`storyBar_${i}`);
+        if (!bar) continue;
+        bar.className = 'story-bar' + (i < activeStoryIndex ? ' done' : (i === activeStoryIndex ? ' active' : ''));
       }
     }
 
-    function nextStorySlide() {
+    function nextStoryImage() {
       const hl = highlightsMap[activeStoryId];
       if (!hl) return;
       if (activeStoryIndex < hl.images.length - 1) {
         activeStoryIndex++;
-        renderStorySlide();
+        showStorySlide();
       } else {
-        closeStoryModal();
+        closeStory();
       }
     }
 
-    function prevStorySlide() {
+    function prevStoryImage() {
       if (activeStoryIndex > 0) {
         activeStoryIndex--;
-        renderStorySlide();
+        showStorySlide();
       }
     }
 
-    function selectStar(val) {
-      selectedRating = val;
+    function closeStory() {
+      document.getElementById('storyModal').classList.remove('open');
+      activeStoryId = null;
+    }
+
+    function setStars(star) {
+      currentRating = star;
       document.querySelectorAll('#starSelector .star-btn').forEach(btn => {
-        const starVal = parseInt(btn.getAttribute('data-val'), 10);
-        btn.classList.toggle('active', starVal <= val);
+        const val = parseInt(btn.getAttribute('data-val'), 10);
+        btn.classList.toggle('active', val <= star);
       });
     }
 
     function formatShortThaiDate(dateObj) {
       if (!dateObj) return '';
-      const shortMonths = ["ม.ค", "ก.พ", "มี.ค", "เม.ย", "พ.ค", "มิ.ย", "ก.ค", "ส.ค", "ก.ย", "ต.ค", "พ.ย", "ธ.ค"];
-      const d = dateObj.getDate();
-      const m = shortMonths[dateObj.getMonth()];
-      return `${d} ${m}`;
+      const shortMonths = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค.", "พ.ย.", "ธ.ค."];
+      return `${dateObj.getDate()} ${shortMonths[dateObj.getMonth()]}`;
     }
 
-    async function submitReview() {
-      const nameInput = document.getElementById('revNameInput');
-      const textInput = document.getElementById('revTextInput');
+    async function sendReview() {
+      const nameInput = document.getElementById('customerName');
+      const feedbackInput = document.getElementById('customerFeedback');
+      const submitBtn = document.getElementById('submitBtn');
+
       const name = nameInput.value.trim();
-      const text = textInput.value.trim();
+      const feedback = feedbackInput.value.trim();
 
-      if (!name) return alert('กรุณากรอกชื่อของคุณก่อนส่งรีวิวนะคะ ♡');
-      if (!text) return alert('กรุณาพิมพ์ข้อความรีวิวก่อนกดส่งนะคะ ♡');
+      if (!name || !feedback) {
+        alert('กรุณากรอกชื่อและข้อความรีวิวก่อนส่งนะคะ ♡');
+        return;
+      }
 
-      const btn = document.getElementById('btnSubmitReview');
-      btn.disabled = true;
-      btn.textContent = 'กำลังส่งรีวิว ♡';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'กำลังส่งรีวิว ♡';
 
       const now = new Date();
-      const shortDateStr = formatShortThaiDate(now);
+      const dateStr = formatShortThaiDate(now);
 
       try {
         await db.collection(DB_REVIEWS).add({
           name: name,
-          rating: selectedRating,
-          text: text,
-          shortDate: shortDateStr,
+          stars: currentRating,
+          feedback: feedback,
+          dateStr: dateStr,
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
         nameInput.value = '';
-        textInput.value = '';
-        selectStar(5);
-        alert('ขอบคุณสำหรับรีวิวน่ารักๆ นะคะ ♡');
+        feedbackInput.value = '';
+        setStars(5);
+        alert('ขอบคุณสำหรับรีวิวนะคะ ♡');
       } catch (err) {
-        alert('เกิดข้อผิดพลาดในการส่งรีวิว: ' + err.message);
+        alert('ส่งรีวิวไม่สำเร็จ: ' + err.message);
       } finally {
-        btn.disabled = false;
-        btn.textContent = 'sent review ♡';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'ส่งรีวิว ♡';
       }
     }
 
     db.collection(DB_REVIEWS).orderBy("createdAt", "desc").onSnapshot(snap => {
-      const listBox = document.getElementById('reviewsListContainer');
-      const totalEl = document.getElementById('totalReviewsCount');
-      const avgEl = document.getElementById('avgRatingValue');
-
+      const container = document.getElementById('reviewsContainer');
       if (snap.empty) {
-        totalEl.textContent = '0';
-        avgEl.textContent = '5.0';
-        listBox.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:13px; padding:16px;">ยังไม่มีรีวิว มาเป็นคนแรกที่รีวิวให้บ้านจุนจุนกันนะคะ ♡</p>';
+        container.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:13px; padding:12px;">ยังไม่มีรีวิว มารีวิวเป็นคนแรกได้เลยนะคะ ♡</p>';
         return;
       }
 
-      let count = 0;
-      let sumStars = 0;
       let html = '';
-
       snap.forEach(doc => {
         const d = doc.data();
-        const stars = Math.min(5, Math.max(1, parseInt(d.rating || 5, 10)));
-        count++;
-        sumStars += stars;
-
-        let dateLabel = d.shortDate || '';
+        const stars = Math.min(5, Math.max(1, parseInt(d.stars || d.rating || 5, 10)));
+        const text = d.feedback || d.text || '';
+        let dateLabel = d.dateStr || d.shortDate || '';
         if (!dateLabel && d.createdAt) {
           const ms = d.createdAt.toMillis ? d.createdAt.toMillis() : d.createdAt.seconds * 1000;
           dateLabel = formatShortThaiDate(new Date(ms));
         }
 
-        const starsStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
-
         html += `
-          <div class="review-item-card">
-            <div class="review-top-row">
-              <div class="reviewer-name">${escapeHtml(d.name)}</div>
-              <div class="review-meta-right">
-                <div class="review-stars-display">${starsStr}</div>
-                ${dateLabel ? `<div class="review-date-short">${escapeHtml(dateLabel)}</div>` : ''}
-              </div>
+          <div class="review-bubble">
+            <div class="review-header">
+              <span class="review-name">${escapeHtml(d.name || 'ลูกค้า')}</span>
+              <span class="review-stars">${'★'.repeat(stars) + '☆'.repeat(5 - stars)}</span>
             </div>
-            <div class="review-body-text">${escapeHtml(d.text)}</div>
+            <div class="review-desc">${escapeHtml(text)}</div>
+            ${dateLabel ? `<div class="review-time">${escapeHtml(dateLabel)}</div>` : ''}
           </div>
         `;
       });
-
-      totalEl.textContent = count;
-      avgEl.textContent = (sumStars / count).toFixed(1);
-      listBox.innerHTML = html;
+      container.innerHTML = html;
     });
 
     function escapeHtml(str) {
