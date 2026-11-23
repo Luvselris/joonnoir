@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title id="pageTitle">joonnoir ♡</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mitr:wght@300;400;500;600&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    :root {
+      --bg-light: #f6f6f6;
+      --bg-mist: #e5e5e5;
+      --bg-sage-gray: #dce0dc;
+      --surface-white: #fbfbfb;
+      --card-bg: rgba(251, 251, 251, 0.96);
+      --border-soft: #e2e2e2;
+      --silver-mid: #b4b4b4;
+      --charcoal-dark: #666666;
+      --text-main: #4a4a4a;
+      --text-muted: #7a7a7a;
+      --shadow-soft: 0 10px 28px rgba(102, 102, 102, 0.12);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Quicksand', 'Mitr', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top, var(--surface-white) 0%, var(--bg-light) 45%, var(--bg-mist) 82%, var(--bg-sage-gray) 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 18px 14px 70px;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 440px;
+      position: relative;
+    }
+
+    .glass-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--surface-white);
+      border-radius: 26px;
+      padding: 16px;
+      box-shadow: var(--shadow-soft);
+      backdrop-filter: blur(12px);
+      margin-bottom: 14px;
+    }
+
+    .banner-wrap {
+      width: 100%;
+      height: 146px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--bg-mist);
+      border: 1.5px solid var(--surface-white);
+    }
+
+    .banner-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-wrap {
+      position: relative;
+      margin-top: -46px;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+    }
+
+    .profile-wrap img {
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3.5px solid var(--surface-white);
+      box-shadow: 0 6px 18px rgba(102, 102, 102, 0.2);
+      background: var(--surface-white);
+      display: block;
+    }
+
+    .shop-name-title {
+      font-size: 21px;
+      font-weight: 700;
+      color: var(--charcoal-dark);
+      margin-top: 10px;
+      text-align: center;
+      letter-spacing: 0.4px;
+    }
+
+    .shop-bio-box {
+      background: var(--bg-light);
+      border: 1px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 13px 15px;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 10px;
+      line-height: 1.75;
+      white-space: pre-line;
+      text-align: center;
+    }
+
+    .highlights-section {
+      margin-top: 16px;
+      padding-top: 4px;
+    }
+
+    .highlights-label {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--charcoal-dark);
+      margin-bottom: 11px;
+      text-align: center;
+    }
+
+    .highlights-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .highlights-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hl-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+      width: 72px;
+      cursor: pointer;
+    }
+
+    .hl-ring {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      padding: 2.5px;
+      background: linear-gradient(135deg, var(--silver-mid), var(--charcoal-dark));
+      box-shadow: 0 4px 10px rgba(102, 102, 102, 0.2);
+      transition: transform 0.15s;
+    }
+
+    .hl-item:active .hl-ring {
+      transform: scale(0.93);
+    }
+
+    .hl-ring img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--surface-white);
+      background: var(--surface-white);
+      display: block;
+    }
+
+    .hl-title {
+      font-size: 11px;
+      color: var(--text-main);
+      margin-top: 6px;
+      text-align: center;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-weight: 600;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--surface-white);
+      border-radius: 22px;
+      padding: 14px 10px;
+      text-align: center;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .stat-number {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--charcoal-dark);
+    }
+
+    .stat-label {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      font-weight: 600;
+    }
+
+    .review-form-title {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--charcoal-dark);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .input-field, .textarea-field {
+      width: 100%;
+      background: var(--bg-light);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 16px;
+      padding: 11px 14px;
+      font-size: 13px;
+      color: var(--text-main);
+      outline: none;
+      margin-bottom: 10px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .input-field:focus, .textarea-field:focus {
+      border-color: var(--charcoal-dark);
+      background: var(--surface-white);
+    }
+
+    .textarea-field {
+      min-height: 82px;
+      resize: vertical;
+    }
+
+    .star-selector {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 4px 0 12px;
+    }
+
+    .star-btn {
+      font-size: 28px;
+      color: #d4d4d4;
+      cursor: pointer;
+      transition: transform 0.15s, color 0.15s;
+      user-select: none;
+    }
+
+    .star-btn.active {
+      color: var(--charcoal-dark);
+    }
+
+    .star-btn:active {
+      transform: scale(1.2);
+    }
+
+    .btn-submit-review {
+      width: 100%;
+      background: linear-gradient(135deg, #7c7c7c 0%, var(--charcoal-dark) 100%);
+      color: var(--surface-white);
+      border: none;
+      border-radius: 20px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(102, 102, 102, 0.25);
+      transition: transform 0.15s;
+    }
+
+    .btn-submit-review:active {
+      transform: scale(0.98);
+    }
+
+    .btn-submit-review:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    .reviews-header {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--charcoal-dark);
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .review-item-card {
+      background: var(--surface-white);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 18px;
+      padding: 13px 14px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 10px rgba(102, 102, 102, 0.06);
+    }
+
+    .review-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .reviewer-name {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      word-break: break-word;
+    }
+
+    .review-meta-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .review-stars-display {
+      font-size: 12.5px;
+      color: var(--charcoal-dark);
+      letter-spacing: 1px;
+      line-height: 1.2;
+    }
+
+    .review-date-short {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .review-body-text {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    .footer-thank-you {
+      text-align: center;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 16px;
+      font-weight: 500;
+    }
+
+    /* Story / Highlight Viewer Modal */
+    .story-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(58, 58, 58, 0.94);
+      z-index: 99999;
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 14px 12px 24px;
+    }
+
+    .story-modal.open {
+      display: flex;
+    }
+
+    .story-progress-bar {
+      display: flex;
+      gap: 4px;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto 10px;
+    }
+
+    .story-seg {
+      flex: 1;
+      height: 3.5px;
+      background: rgba(251, 251, 251, 0.3);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .story-seg.done {
+      background: var(--surface-white);
+    }
+
+    .story-seg.active {
+      background: var(--silver-mid);
+    }
+
+    .story-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 480px;
+      margin: 0 auto;
+      color: var(--surface-white);
+    }
+
+    .story-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .story-info img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--surface-white);
+    }
+
+    .story-close-btn {
+      background: rgba(251, 251, 251, 0.16);
+      border: none;
+      color: var(--surface-white);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .story-media-stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      width: 100%;
+      max-width: 540px;
+      margin: 10px auto;
+      overflow: hidden;
+    }
+
+    .story-media-stage img {
+      max-width: 100%;
+      max-height: 78vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .story-tap-left, .story-tap-right {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 42%;
+      cursor: pointer;
+      z-index: 5;
+    }
+
+    .story-tap-left {
+      left: 0;
+    }
+
+    .story-tap-right {
+      right: 0;
+    }
+
+    .story-footer-counter {
+      text-align: center;
+      color: rgba(251, 251, 251, 0.88);
+      font-size: 12px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- เพลงพื้นหลัง -->
+  <audio id="bgMusic" loop preload="auto" src="https://file.garden/asG8Gt-rqWIpi3II/BTS%20(%E1%84%87%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%AB%E1%84%89%E1%85%A9%E1%84%82%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB)%20-%20Heartbeat%20(Color%20Coded%20Lyrics%20Eng%20Rom%20Han%20%E1%84%80%E1%85%A1%E1%84%89%E1%85%A1).mp3"></audio>
+
+  <div class="container">
+
+    <!-- 1. การ์ดโปรไฟล์ + ไฮไลท์ -->
+    <div class="glass-card">
+      <div class="banner-wrap">
+        <img id="bannerImg" src="https://files.catbox.moe/vc7n8m.gif" alt="Banner">
+      </div>
+      <div class="profile-wrap">
+        <img id="profileImg" src="https://files.catbox.moe/3sjpq9.jpeg" alt="Profile">
+      </div>
+      <h1 class="shop-name-title" id="shopNameText">joonnoir</h1>
+      <div class="shop-bio-box" id="shopBioText">joonnoir 𐙚
+a little shop for k-pop lovers
+photocards • k-pop goods • premium apps
+digital services & more ♡
+made with love, packed with care</div>
+
+      <!-- แถบ Highlights -->
+      <div class="highlights-section" id="highlightsWrapper">
+        <div class="highlights-label" id="highlightsSectionTitle">the love archive</div>
+        <div class="highlights-scroll" id="highlightsContainer">
+          <div style="font-size:12px; color:var(--text-muted); padding:4px 0;">ยังไม่มีรายการไฮไลท์ ♡</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. การ์ดสรุปจำนวนรีวิว & คะแนนเฉลี่ย -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="totalReviewsCount">0</div>
+        <div class="stat-label">Total Reviews ♡</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="avgRatingValue">5.0</div>
+        <div class="stat-label">Rating ♡</div>
+      </div>
+    </div>
+
+    <!-- 3. กล่องส่งรีวิว -->
+    <div class="glass-card">
+      <div class="review-form-title" id="reviewFormTitle">review joonnoir ♡</div>
+      <input type="text" id="revNameInput" class="input-field" placeholder="ชื่อของคุณ ♡" maxlength="40">
+
+      <div class="star-selector" id="starSelector">
+        <span class="star-btn active" data-val="1" onclick="selectStar(1)">★</span>
+        <span class="star-btn active" data-val="2" onclick="selectStar(2)">★</span>
+        <span class="star-btn active" data-val="3" onclick="selectStar(3)">★</span>
+        <span class="star-btn active" data-val="4" onclick="selectStar(4)">★</span>
+        <span class="star-btn active" data-val="5" onclick="selectStar(5)">★</span>
+      </div>
+
+      <textarea id="revTextInput" class="textarea-field" placeholder="เขียนรีวิวให้บ้านจุนจุนได้เลยนะคะ ♡" maxlength="400"></textarea>
+      <button type="button" class="btn-submit-review" id="btnSubmitReview" onclick="submitReview()">sent review ♡</button>
+    </div>
+
+    <!-- 4. กล่องแสดงรีวิวทั้งหมด -->
+    <div class="glass-card">
+      <div class="reviews-header" id="reviewsSectionTitle">รีวิวจากลูกค้าบ้านจุนจุน</div>
+      <div id="reviewsListContainer">
+        <p style="text-align:center; color:var(--text-muted); font-size:13px; padding:16px;">กำลังโหลดรีวิว ♡</p>
+      </div>
+    </div>
+
+    <div class="footer-thank-you" id="footerThankYouText">♡ Thank you for supporting joonnoir ♡</div>
+
+  </div>
+
+  <!-- Story / Highlight Viewer Modal -->
+  <div class="story-modal" id="storyModal">
+    <div>
+      <div class="story-progress-bar" id="storyProgressBar"></div>
+      <div class="story-header">
+        <div class="story-info">
+          <img id="storyCoverThumb" src="" alt="">
+          <span id="storyTitleText" style="font-weight:700; font-size:14px;"></span>
+        </div>
+        <button type="button" class="story-close-btn" onclick="closeStoryModal()">x</button>
+      </div>
+    </div>
+
+    <div class="story-media-stage">
+      <div class="story-tap-left" onclick="prevStorySlide()"></div>
+      <img id="storyFullImg" src="" alt="Highlight Image">
+      <div class="story-tap-right" onclick="nextStorySlide()"></div>
+    </div>
+
+    <div class="story-footer-counter" id="storyCounterText">1 / 1</div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCpAGDSy1NRgmLV_g7qJrCpwOhU9MrfQyY",
+      authDomain: "benefitie.firebaseapp.com",
+      projectId: "benefitie",
+      storageBucket: "benefitie.firebasestorage.app",
+      messagingSenderId: "270365672215",
+      appId: "1:270365672215:web:230d1491091e26ce83ed52"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // แยกคอลเลกชันเฉพาะของร้าน joonnoir
+    const DB_SITE = "joonnoir_site";
+    const DB_REVIEWS = "joonnoir_reviews";
+    const DB_HIGHLIGHTS = "joonnoir_highlights";
+
+    const DEFAULT_BANNER_URL = "https://files.catbox.moe/vc7n8m.gif";
+    const DEFAULT_PROFILE_URL = "https://files.catbox.moe/3sjpq9.jpeg";
+    const DEFAULT_MUSIC_URL = "https://file.garden/asG8Gt-rqWIpi3II/BTS%20(%E1%84%87%E1%85%A1%E1%86%BC%E1%84%90%E1%85%A1%E1%86%AB%E1%84%89%E1%85%A9%E1%84%82%E1%85%A7%E1%86%AB%E1%84%83%E1%85%A1%E1%86%AB)%20-%20Heartbeat%20(Color%20Coded%20Lyrics%20Eng%20Rom%20Han%20%E1%84%80%E1%85%A1%E1%84%89%E1%85%A1).mp3";
+
+    let selectedRating = 5;
+    let highlightsMap = {};
+    let activeStoryId = null;
+    let activeStoryIndex = 0;
+
+    let latestConfigData = {};
+    let latestMediaData = {};
+
+    const music = document.getElementById('bgMusic');
+
+    ['touchstart', 'click'].forEach(evt => {
+      document.addEventListener(evt, () => {
+        if (music.paused) {
+          music.play().catch(() => {});
+        }
+      }, { once: true });
+    });
+
+    function renderShopConfigAndMedia() {
+      const d = latestConfigData || {};
+      const m = latestMediaData || {};
+
+      const shopName = d.shopName || "joonnoir";
+      document.getElementById('shopNameText').textContent = shopName;
+      document.getElementById('pageTitle').textContent = shopName + " ♡";
+      const cleanName = shopName.replace(/♡/g, '').trim() || "joonnoir";
+      document.getElementById('reviewFormTitle').textContent = `review ${cleanName} ♡`;
+
+      if (d.shopBio !== undefined && d.shopBio !== "") {
+        document.getElementById('shopBioText').textContent = d.shopBio;
+      }
+      if (d.highlightsTitle) {
+        document.getElementById('highlightsSectionTitle').textContent = d.highlightsTitle;
+      }
+      if (d.reviewsTitle) {
+        document.getElementById('reviewsSectionTitle').textContent = d.reviewsTitle;
+      }
+      if (d.footerText) {
+        document.getElementById('footerThankYouText').textContent = d.footerText;
+      }
+
+      const bannerSrc = m.bannerImg || d.bannerImg || DEFAULT_BANNER_URL;
+      document.getElementById('bannerImg').src = bannerSrc;
+
+      const profileSrc = m.profileImg || d.profileImg || DEFAULT_PROFILE_URL;
+      document.getElementById('profileImg').src = profileSrc;
+
+      const targetMusic = d.musicUrl || DEFAULT_MUSIC_URL;
+      if (targetMusic && music.src !== targetMusic) {
+        music.src = targetMusic;
+      }
+    }
+
+    db.collection(DB_SITE).doc("config").onSnapshot(doc => {
+      if (doc.exists) {
+        latestConfigData = doc.data() || {};
+        renderShopConfigAndMedia();
+      }
+    });
+
+    db.collection(DB_SITE).doc("media").onSnapshot(doc => {
+      if (doc.exists) {
+        latestMediaData = doc.data() || {};
+        renderShopConfigAndMedia();
+      }
+    });
+
+    db.collection(DB_HIGHLIGHTS).orderBy("order", "asc").onSnapshot(async snap => {
+      const container = document.getElementById('highlightsContainer');
+
+      if (snap.empty) {
+        container.innerHTML = '<div style="font-size:12px; color:var(--text-muted); padding:4px 0;">ยังไม่มีรายการไฮไลท์ ♡</div>';
+        highlightsMap = {};
+        return;
+      }
+
+      container.innerHTML = '';
+      highlightsMap = {};
+
+      for (const doc of snap.docs) {
+        const hlData = doc.data();
+        const hlId = doc.id;
+
+        const imgSnap = await db.collection(DB_HIGHLIGHTS).doc(hlId).collection("images").orderBy("createdAt", "asc").get();
+        const imgUrls = [];
+        imgSnap.forEach(imgDoc => {
+          const item = imgDoc.data();
+          const src = item.dataUrl || item.url;
+          if (src) imgUrls.push(src);
+        });
+
+        highlightsMap[hlId] = {
+          id: hlId,
+          title: hlData.title || "Highlight",
+          cover: hlData.coverDataUrl || hlData.cover || imgUrls[0] || DEFAULT_PROFILE_URL,
+          images: imgUrls
+        };
+
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'hl-item';
+        itemDiv.onclick = () => openStoryModal(hlId);
+        itemDiv.innerHTML = `
+          <div class="hl-ring">
+            <img src="${highlightsMap[hlId].cover}" alt="${escapeHtml(highlightsMap[hlId].title)}">
+          </div>
+          <div class="hl-title">${escapeHtml(highlightsMap[hlId].title)}</div>
+        `;
+        container.appendChild(itemDiv);
+      }
+    });
+
+    function openStoryModal(hlId) {
+      const hl = highlightsMap[hlId];
+      if (!hl || hl.images.length === 0) {
+        alert('ไฮไลท์นี้ยังไม่มีรูปภาพด้านในค่ะ ♡');
+        return;
+      }
+      activeStoryId = hlId;
+      activeStoryIndex = 0;
+      document.getElementById('storyCoverThumb').src = hl.cover;
+      document.getElementById('storyTitleText').textContent = hl.title;
+      renderStorySlide();
+      document.getElementById('storyModal').classList.add('open');
+    }
+
+    function closeStoryModal() {
+      document.getElementById('storyModal').classList.remove('open');
+      activeStoryId = null;
+    }
+
+    function renderStorySlide() {
+      const hl = highlightsMap[activeStoryId];
+      if (!hl) return;
+      const total = hl.images.length;
+      const url = hl.images[activeStoryIndex];
+
+      document.getElementById('storyFullImg').src = url;
+      document.getElementById('storyCounterText').textContent = `${activeStoryIndex + 1} / ${total}`;
+
+      const bar = document.getElementById('storyProgressBar');
+      bar.innerHTML = '';
+      for (let i = 0; i < total; i++) {
+        const seg = document.createElement('div');
+        seg.className = 'story-seg' + (i < activeStoryIndex ? ' done' : (i === activeStoryIndex ? ' active' : ''));
+        bar.appendChild(seg);
+      }
+    }
+
+    function nextStorySlide() {
+      const hl = highlightsMap[activeStoryId];
+      if (!hl) return;
+      if (activeStoryIndex < hl.images.length - 1) {
+        activeStoryIndex++;
+        renderStorySlide();
+      } else {
+        closeStoryModal();
+      }
+    }
+
+    function prevStorySlide() {
+      if (activeStoryIndex > 0) {
+        activeStoryIndex--;
+        renderStorySlide();
+      }
+    }
+
+    function selectStar(val) {
+      selectedRating = val;
+      document.querySelectorAll('#starSelector .star-btn').forEach(btn => {
+        const starVal = parseInt(btn.getAttribute('data-val'), 10);
+        btn.classList.toggle('active', starVal <= val);
+      });
+    }
+
+    function formatShortThaiDate(dateObj) {
+      if (!dateObj) return '';
+      const shortMonths = ["ม.ค", "ก.พ", "มี.ค", "เม.ย", "พ.ค", "มิ.ย", "ก.ค", "ส.ค", "ก.ย", "ต.ค", "พ.ย", "ธ.ค"];
+      const d = dateObj.getDate();
+      const m = shortMonths[dateObj.getMonth()];
+      return `${d} ${m}`;
+    }
+
+    async function submitReview() {
+      const nameInput = document.getElementById('revNameInput');
+      const textInput = document.getElementById('revTextInput');
+      const name = nameInput.value.trim();
+      const text = textInput.value.trim();
+
+      if (!name) return alert('กรุณากรอกชื่อของคุณก่อนส่งรีวิวนะคะ ♡');
+      if (!text) return alert('กรุณาพิมพ์ข้อความรีวิวก่อนกดส่งนะคะ ♡');
+
+      const btn = document.getElementById('btnSubmitReview');
+      btn.disabled = true;
+      btn.textContent = 'กำลังส่งรีวิว ♡';
+
+      const now = new Date();
+      const shortDateStr = formatShortThaiDate(now);
+
+      try {
+        await db.collection(DB_REVIEWS).add({
+          name: name,
+          rating: selectedRating,
+          text: text,
+          shortDate: shortDateStr,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        nameInput.value = '';
+        textInput.value = '';
+        selectStar(5);
+        alert('ขอบคุณสำหรับรีวิวน่ารักๆ นะคะ ♡');
+      } catch (err) {
+        alert('เกิดข้อผิดพลาดในการส่งรีวิว: ' + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'sent review ♡';
+      }
+    }
+
+    db.collection(DB_REVIEWS).orderBy("createdAt", "desc").onSnapshot(snap => {
+      const listBox = document.getElementById('reviewsListContainer');
+      const totalEl = document.getElementById('totalReviewsCount');
+      const avgEl = document.getElementById('avgRatingValue');
+
+      if (snap.empty) {
+        totalEl.textContent = '0';
+        avgEl.textContent = '5.0';
+        listBox.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-size:13px; padding:16px;">ยังไม่มีรีวิว มาเป็นคนแรกที่รีวิวให้บ้านจุนจุนกันนะคะ ♡</p>';
+        return;
+      }
+
+      let count = 0;
+      let sumStars = 0;
+      let html = '';
+
+      snap.forEach(doc => {
+        const d = doc.data();
+        const stars = Math.min(5, Math.max(1, parseInt(d.rating || 5, 10)));
+        count++;
+        sumStars += stars;
+
+        let dateLabel = d.shortDate || '';
+        if (!dateLabel && d.createdAt) {
+          const ms = d.createdAt.toMillis ? d.createdAt.toMillis() : d.createdAt.seconds * 1000;
+          dateLabel = formatShortThaiDate(new Date(ms));
+        }
+
+        const starsStr = '★'.repeat(stars) + '☆'.repeat(5 - stars);
+
+        html += `
+          <div class="review-item-card">
+            <div class="review-top-row">
+              <div class="reviewer-name">${escapeHtml(d.name)}</div>
+              <div class="review-meta-right">
+                <div class="review-stars-display">${starsStr}</div>
+                ${dateLabel ? `<div class="review-date-short">${escapeHtml(dateLabel)}</div>` : ''}
+              </div>
+            </div>
+            <div class="review-body-text">${escapeHtml(d.text)}</div>
+          </div>
+        `;
+      });
+
+      totalEl.textContent = count;
+      avgEl.textContent = (sumStars / count).toFixed(1);
+      listBox.innerHTML = html;
+    });
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+  </script>
+</body>
+</html>
